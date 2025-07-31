@@ -1,0 +1,468 @@
+{
+  "name": "My workflow 4",
+  "nodes": [
+    {
+      "parameters": {
+        "url": "https://opportunitydesk.org/feed/",
+        "options": {}
+      },
+      "id": "0f156c29-91d3-47c8-b080-d771ac6b0f49",
+      "name": "OpportunityDesk Feed (HTTP)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        448,
+        176
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "3f7693cb-1c5e-4d1f-affd-6e3019c2bd8b",
+      "name": "OpportunityDesk Feed (XML)",
+      "type": "n8n-nodes-base.xml",
+      "typeVersion": 1,
+      "position": [
+        688,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://www.wemakescholars.com/scholarship",
+        "sendBody": true,
+        "contentType": "raw",
+        "options": {}
+      },
+      "id": "4c2a182d-e45e-4b24-978f-7cdd3e83c2cb",
+      "name": "WeMakeScholars Feed (HTTP)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        432,
+        368
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 9 * * *"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "ad932139-4cdc-45ef-abc9-b1574f467332",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "extractionValues": {
+          "values": [
+            {
+              "key": "page_title",
+              "cssSelector": "title"
+            },
+            {
+              "key": "meta_description",
+              "cssSelector": "meta[name=\"description\"]",
+              "returnValue": "attribute",
+              "attribute": "content"
+            },
+            {
+              "key": "scholarship_links",
+              "cssSelector": "a[href*=\"scholarship\"]",
+              "returnValue": "attribute",
+              "attribute": "href",
+              "returnArray": true
+            },
+            {
+              "key": "scholarship_titles",
+              "cssSelector": "a[href*=\"scholarship\"]",
+              "returnArray": true
+            },
+            {
+              "key": "nationality_options",
+              "cssSelector": "select[name=\"nationality\"] option",
+              "returnArray": true
+            },
+            {
+              "key": "nationality_values",
+              "cssSelector": "select[name=\"nationality\"] option",
+              "returnValue": "attribute",
+              "attribute": "value",
+              "returnArray": true
+            },
+            {
+              "key": "degree_options",
+              "cssSelector": "select[name=\"study[]\"] option",
+              "returnArray": true
+            },
+            {
+              "key": "degree_values",
+              "cssSelector": "select[name=\"study[]\"] option",
+              "returnValue": "attribute",
+              "attribute": "value",
+              "returnArray": true
+            },
+            {
+              "key": "country_options",
+              "cssSelector": "select[name=\"country[]\"] option",
+              "returnArray": true
+            },
+            {
+              "key": "country_values",
+              "cssSelector": "select[name=\"country[]\"] option",
+              "returnValue": "attribute",
+              "attribute": "value",
+              "returnArray": true
+            },
+            {
+              "key": "scholarship_type_options",
+              "cssSelector": "select[name=\"payment[]\"] option",
+              "returnArray": true
+            },
+            {
+              "key": "scholarship_type_values",
+              "cssSelector": "select[name=\"payment[]\"] option",
+              "returnValue": "attribute",
+              "attribute": "value",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "WeMakeScholars Data Extractor",
+      "type": "n8n-nodes-base.htmlExtract",
+      "typeVersion": 1,
+      "position": [
+        736,
+        384
+      ],
+      "id": "fb4d4b40-5a3e-45d5-b525-9f0231eaebfa"
+    },
+    {
+      "parameters": {
+        "path": "39d7b712-1415-4a57-b9d4-b81ac7ac4705",
+        "formTitle": "Scholarship Matching Application",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Major",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Email",
+              "fieldType": "email",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "CV",
+              "fieldType": "textarea",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Study Program",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Undergraduate"
+                  },
+                  {
+                    "option": "Graduate"
+                  },
+                  {
+                    "option": "PhD"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Country",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "GPA",
+              "fieldType": "number"
+            },
+            {
+              "fieldLabel": "Graduation Year",
+              "fieldType": "number"
+            }
+          ]
+        },
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "53eb3919-d15c-49d1-a3d0-c42f0b682ec4",
+      "name": "Student Form",
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2,
+      "position": [
+        1088,
+        640
+      ],
+      "webhookId": "39d7b712-1415-4a57-b9d4-b81ac7ac4705"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combinationMode": "mergeByPosition",
+        "options": {}
+      },
+      "id": "69553b67-8bf4-4f2f-a4b6-416d8d26a7f7",
+      "name": "Merge Scholarship Data",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2.1,
+      "position": [
+        1088,
+        336
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combinationMode": "mergeByPosition",
+        "options": {}
+      },
+      "id": "8d8b81a6-23e7-4023-a7ee-2b6628650a57",
+      "name": "Combine Student + Scholarships",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2.1,
+      "position": [
+        1392,
+        528
+      ]
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4o-mini"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are an AI scholarship matching assistant. Analyze the student profile and available scholarships to find the best matches.\n\nStudent Profile:\n- Major/Field: {{ $('Student Form').item.json.Major }}\n- Email: {{ $('Student Form').item.json.Email }}\n- Study Level: {{ $('Student Form').item.json['Study Program'] }}\n- Country: {{ $('Student Form').item.json.Country }}\n- GPA: {{ $('Student Form').item.json.GPA || 'Not provided' }}\n- Graduation Year: {{ $('Student Form').item.json['Graduation Year'] || 'Not provided' }}\n- CV Details: {{ $('Student Form').item.json.CV }}\n- Application Date: {{ new Date().toISOString().split('T')[0] }}\n\nAvailable Scholarship Data:\n{{ JSON.stringify($('Merge Scholarship Data').all(), null, 2) }}\n\nAnalyze and match based on:\n- Academic qualifications and field of study alignment\n- Geographic eligibility and location requirements\n- Study level compatibility (undergraduate/graduate/PhD)\n- Application deadlines (prioritize those closing soon)\n- Award amounts and financial aid potential\n- Special requirements and eligibility criteria\n\nReturn your response in this exact JSON format:\n{\n  \"student_email\": \"{{ $('Student Form').item.json.Email }}\",\n  \"analysis_date\": \"{{ new Date().toISOString() }}\",\n  \"top_matches\": [\n    {\n      \"scholarship_name\": \"Name of scholarship\",\n      \"match_score\": 85,\n      \"eligibility_status\": \"fully_eligible\",\n      \"matching_criteria\": [\"Field of study match\", \"GPA requirement met\", \"Geographic eligibility\"],\n      \"missing_requirements\": [\"Community service hours\"],\n      \"application_deadline\": \"2025-12-31\",\n      \"estimated_award_amount\": \"$5,000 - $10,000\",\n      \"priority\": \"high\",\n      \"application_link\": \"URL if available\",\n      \"brief_description\": \"Brief scholarship description\"\n    }\n  ],\n  \"total_matches_found\": 3,\n  \"recommendations\": \"Specific actionable recommendations for the student\",\n  \"next_steps\": \"Clear next steps the student should take\"\n}\n\nPrioritize scholarships with:\n1. Match score above 75%\n2. Deadlines within the next 60 days\n3. Higher award amounts\n4. Less competitive requirements\n5. Perfect field/level alignment\n\nBe objective and realistic. Only suggest scholarships where the student has a genuine chance of success based on their profile."
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "options": {
+          "maxTokens": 2000,
+          "temperature": 0.3
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        1696,
+        528
+      ],
+      "id": "7e0e720f-b957-491f-8e6d-cc8ce72bc570",
+      "name": "AI Scholarship Matcher",
+      "credentials": {
+        "openAiApi": {
+          "id": "QE8j1AL1LoFASc5e",
+          "name": "OpenAi account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "sendTo": "={{ $('Student Form').item.json.Email }}",
+        "subject": "🎓 Your Personalized Scholarship Matches - {{ new Date().toLocaleDateString() }}",
+        "message": "=<!DOCTYPE html>\n<html>\n<head>\n    <style>\n        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }\n        .header { background: #4CAF50; color: white; padding: 20px; text-align: center; }\n        .content { padding: 20px; }\n        .scholarship { border: 1px solid #ddd; margin: 15px 0; padding: 15px; border-radius: 8px; }\n        .high-priority { border-left: 5px solid #ff6b6b; }\n        .medium-priority { border-left: 5px solid #ffa500; }\n        .low-priority { border-left: 5px solid #4CAF50; }\n        .match-score { font-weight: bold; color: #4CAF50; }\n        .deadline { color: #ff6b6b; font-weight: bold; }\n        .footer { background: #f4f4f4; padding: 15px; text-align: center; margin-top: 20px; }\n    </style>\n</head>\n<body>\n    <div class=\"header\">\n        <h1>🎓 Your Scholarship Matches</h1>\n        <p>Personalized recommendations based on your profile</p>\n    </div>\n    \n    <div class=\"content\">\n        <h2>Hello {{ $('Student Form').item.json.Major }} Student!</h2>\n        \n        <p>We've analyzed <strong>{{ $json.total_matches_found || 'several' }}</strong> scholarships and found the best matches for your profile:</p>\n        \n        <div style=\"background: #f9f9f9; padding: 15px; border-radius: 5px; margin: 20px 0;\">\n            <strong>Your Profile Summary:</strong><br>\n            📚 Field of Study: {{ $('Student Form').item.json.Major }}<br>\n            🎯 Study Level: {{ $('Student Form').item.json['Study Program'] }}<br>\n            🌍 Location: {{ $('Student Form').item.json.Country }}<br>\n            📅 Analysis Date: {{ new Date().toLocaleDateString() }}\n        </div>\n\n        <h3>🏆 Top Scholarship Matches</h3>\n        \n        {% set matches = $json.top_matches || [] %}\n        {% for scholarship in matches %}\n        <div class=\"scholarship {{ scholarship.priority }}-priority\">\n            <h4>{{ scholarship.scholarship_name || 'Scholarship Opportunity' }}</h4>\n            <p><span class=\"match-score\">Match Score: {{ scholarship.match_score || 'N/A' }}%</span></p>\n            \n            {% if scholarship.application_deadline %}\n            <p><span class=\"deadline\">⏰ Deadline: {{ scholarship.application_deadline }}</span></p>\n            {% endif %}\n            \n            {% if scholarship.estimated_award_amount %}\n            <p><strong>💰 Award Amount:</strong> {{ scholarship.estimated_award_amount }}</p>\n            {% endif %}\n            \n            {% if scholarship.brief_description %}\n            <p><strong>Description:</strong> {{ scholarship.brief_description }}</p>\n            {% endif %}\n            \n            {% if scholarship.matching_criteria %}\n            <p><strong>✅ Why you match:</strong></p>\n            <ul>\n                {% for criteria in scholarship.matching_criteria %}\n                <li>{{ criteria }}</li>\n                {% endfor %}\n            </ul>\n            {% endif %}\n            \n            {% if scholarship.missing_requirements %}\n            <p><strong>⚠️ To strengthen your application:</strong></p>\n            <ul>\n                {% for requirement in scholarship.missing_requirements %}\n                <li>{{ requirement }}</li>\n                {% endfor %}\n            </ul>\n            {% endif %}\n            \n            {% if scholarship.application_link %}\n            <p><a href=\"{{ scholarship.application_link }}\" style=\"background: #4CAF50; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px;\">Apply Now</a></p>\n            {% endif %}\n        </div>\n        {% endfor %}\n        \n        <div style=\"background: #e8f5e8; padding: 20px; border-radius: 8px; margin: 30px 0;\">\n            <h3>📋 Recommendations</h3>\n            <p>{{ $json.recommendations || 'Focus on scholarships with the highest match scores and earliest deadlines.' }}</p>\n            \n            {% if $json.next_steps %}\n            <h4>Next Steps:</h4>\n            <p>{{ $json.next_steps }}</p>\n            {% endif %}\n        </div>\n        \n        <div style=\"background: #fff3cd; padding: 15px; border-radius: 5px; border-left: 4px solid #ffc107;\">\n            <strong>💡 Pro Tips:</strong>\n            <ul>\n                <li>Apply to multiple scholarships to increase your chances</li>\n                <li>Start with scholarships that have the earliest deadlines</li>\n                <li>Tailor each application to the specific scholarship requirements</li>\n                <li>Keep track of all deadlines and requirements</li>\n            </ul>\n        </div>\n    </div>\n    \n    <div class=\"footer\">\n        <p>This analysis was generated on {{ new Date().toLocaleDateString() }} based on your submitted profile.</p>\n        <p>Good luck with your applications! 🍀</p>\n    </div>\n</body>\n</html>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        2000,
+        528
+      ],
+      "id": "579e5edd-8ace-40a2-bdf6-a8442071c49c",
+      "name": "Send Scholarship Results",
+      "webhookId": "a1eb82a2-d013-43f9-b12d-d58663b717c1",
+      "credentials": {
+        "googleApi": {
+          "id": "TYTG2Esdx9ju07Ao",
+          "name": "Google Service Account account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"success\": true,\n  \"message\": \"Your scholarship analysis has been completed! Check your email ({{ $('Student Form').item.json.Email }}) for personalized recommendations.\",\n  \"timestamp\": \"{{ new Date().toISOString() }}\",\n  \"matches_found\": {{ $('AI Scholarship Matcher').item.json.total_matches_found || 0 }}\n}",
+        "options": {}
+      },
+      "id": "8367ba01-d4a4-4ed3-b0bb-4226011f2bdd",
+      "name": "Success Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        2288,
+        528
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"success\": false,\n  \"message\": \"Sorry, there was an error processing your application. Please try again later.\",\n  \"error\": \"{{ $json.error?.message || 'Unknown error occurred' }}\",\n  \"timestamp\": \"{{ new Date().toISOString() }}\"\n}",
+        "options": {}
+      },
+      "id": "f73a95f2-3c7f-4148-95e0-5a4544d29e9c",
+      "name": "Error Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        2000,
+        736
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "OpportunityDesk Feed (HTTP)": {
+      "main": [
+        [
+          {
+            "node": "OpportunityDesk Feed (XML)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpportunityDesk Feed (XML)": {
+      "main": [
+        [
+          {
+            "node": "Merge Scholarship Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WeMakeScholars Feed (HTTP)": {
+      "main": [
+        [
+          {
+            "node": "WeMakeScholars Data Extractor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "OpportunityDesk Feed (HTTP)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "WeMakeScholars Feed (HTTP)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WeMakeScholars Data Extractor": {
+      "main": [
+        [
+          {
+            "node": "Merge Scholarship Data",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Student Form": {
+      "main": [
+        [
+          {
+            "node": "Combine Student + Scholarships",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge Scholarship Data": {
+      "main": [
+        [
+          {
+            "node": "Combine Student + Scholarships",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Combine Student + Scholarships": {
+      "main": [
+        [
+          {
+            "node": "AI Scholarship Matcher",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Scholarship Matcher": {
+      "main": [
+        [
+          {
+            "node": "Send Scholarship Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Scholarship Results": {
+      "main": [
+        [
+          {
+            "node": "Success Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "257301aa-a436-4112-b1e7-e990f68f149b",
+  "meta": {
+    "instanceId": "56a2029c90198fd08d2b70e450e71b5ec08cee777b6e0c228f797eee56317623"
+  },
+  "id": "KlCf4J9H7RxoA4Iw",
+  "tags": []
+}
