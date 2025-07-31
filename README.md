@@ -485,5 +485,3 @@ For enterprise implementations:
 **Last Updated**: July 31, 2025  
 **Version**: 1.0  
 **Status**: Production Ready  
-**License**: MIT  
-**Maintainer**: Scholarship Automation Team
